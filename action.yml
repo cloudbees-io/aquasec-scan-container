@@ -1,0 +1,46 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: aquasec
+inputs:
+  scannercli-username:
+    required: true
+  scannercli-password:
+    required: true
+  server-url:
+    required: true
+  username:
+    required: true
+  password:
+    required: true
+  image-location:
+    required: true
+  image-tag:
+    required: true
+runs:
+  using: composite
+  steps:
+    - id: aquasec
+      name: aquasec
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/aquasec-actions:main-e49cca85141caabf184c9da2f9276dd206995ca7
+      shell: bash
+      env:
+        RUN_ID: ${{ cloudbees.run_id }}
+        JOB_ID: ${{ job.id }}
+        STEP_ID: ${{ step.internal.id }}
+        DNS_URL: ${{ cloudbees.api.url }}
+        JWT_TOKEN: ${{ cloudbees.api.token }} 
+        BINARY_IMAGE_NAME: "aquasec_binary_asset.tar"
+        CONFIG_JSON: '{\"metaInfo\":{\"url\":\"${{ inputs.server-url }}\",\"username\":\"${{ inputs.username }}\",\"password\":\"${{ inputs.password }}\",\"client_secret\":\"NA\",\"toolName\":\"aquasec\"},\"orchestratorInfo\":{\"assetType\":\"BINARY\",\"assetIdentifier\":\"${{ inputs.image-location }}\",\"profileIdentifier\":\"${{ inputs.image-tag }}\",\"sourceType\":\"SAAS\"},\"metaInformation\":{\"actor\":\"NA\",\"commit_id\":\"NA\",\"tenent_info\":\"NA\",\"scanner_type\":\"Container\"}}'
+      run: |
+        set -x
+        echo "RUN ID: ${{ cloudbees.run_id }}"
+        echo "Job ID: ${{ job.id }}"
+        echo "Step ID: ${{ step.internal.id }}"
+        cd /
+        curl -u "${{ inputs.scannercli-username }}:${{ inputs.scannercli-password }}" https://download.aquasec.com/scanner/2022.4/scannercli -o scannercli
+        chmod +x scannercli
+        if [ -f $CLOUDBEES_WORKSPACE/$BINARY_IMAGE_NAME ]; then
+          rm $CLOUDBEES_WORKSPACE/$BINARY_IMAGE_NAME
+        fi
+        skopeo copy docker://${{ inputs.image-location }}:${{ inputs.image-tag }} docker-archive:$CLOUDBEES_WORKSPACE/$BINARY_IMAGE_NAME:${{ inputs.image-location }}:${{ inputs.image-tag }} --dest-oci-accept-uncompressed-layers
+        /bin/bash -c "./executables/aquasec & while ! nc -z localhost 5001; do sleep 1; done && ./executables/orchestrator -scanConfig \"${CONFIG_JSON}\" execute-analyser && exit"

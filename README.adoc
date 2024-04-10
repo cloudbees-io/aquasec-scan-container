@@ -1,6 +1,7 @@
 = CloudBees action: Scan with Aquasec
 
-Use this action to scan container images with the Aquasec scanner, to identify and fix security vulnerabilities.
+Use this action to scan container images with the Aquasec scanner. 
+Detect and fix security threats to your container-based cloud applications.
 
 == Inputs
 
@@ -54,7 +55,7 @@ Use this action to scan container images with the Aquasec scanner, to identify a
 
 In your YAML file, add:
 
-[source,yaml]
+[source,yaml,role="default-expanded"]
 ----
 
       - name: Scan with Aquasec
@@ -64,7 +65,17 @@ In your YAML file, add:
           image-tag: "latest"
           server-url: "${{ vars.AQUASEC_SERVER_URL }}"
           username: "${{ vars.AQUASEC_USERNAME }}"
-          spassword: "${{ vars.AQUASEC_PASSWORD }}"
+          password: "${{ secrets.AQUASEC_PASSWORD }}"
           scannercli-username: "${{ vars.AQUASEC_SCANNERCLI_USERNAME }}"
-          scannercli-password: "${{ vars.AQUASEC_SCANNERCLI_PASSWORD }}"
+          scannercli-password: "${{ secrets.AQUASEC_SCANNERCLI_PASSWORD }}"
 ----
+
+== License
+
+This code is made available under the 
+link:https://opensource.org/license/mit/[MIT license].
+
+== References
+
+* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/actions[using actions in CloudBees workflows].
+* Learn about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/[the CloudBees platform].

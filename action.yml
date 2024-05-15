@@ -21,7 +21,7 @@ runs:
   steps:
     - id: aquasec
       name: aquasec
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/aquasec-actions:main-e49cca85141caabf184c9da2f9276dd206995ca7
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/aquasec-actions:main-317f105e9eb6fcfefbe87b0355d5da27a33aa5d9
       shell: bash
       env:
         RUN_ID: ${{ cloudbees.run_id }}

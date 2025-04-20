@@ -35,7 +35,8 @@ runs:
         ls -ltr $CLOUDBEES_WORKSPACE
            
     - name: aquasec
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/aquasec-actions:main-19b7976bd7ad4f65c23b0aae3397a6470c5fb1fe
+      # uses: docker://public.ecr.aws/l7o7z1g8/actions/aquasec-actions:main-19b7976bd7ad4f65c23b0aae3397a6470c5fb1fe
+      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/aquasec-actions:CBP-12062-03c70285690de5e2ffe5525eef4595c29d8a5c3c 
       shell: bash
       env:
         RUN_ID: ${{ cloudbees.run_id }}

@@ -20,7 +20,7 @@ runs:
   using: composite
   steps:
     - name: skopeo
-      uses: docker://public.ecr.aws/logistics/quay.io/skopeo/stable:v1.10
+      uses: docker://public.ecr.aws/logistics/quay.io/skopeo/stable:main-dee13c395d38b835b0f99354e6ced0484acd6169
       shell: bash
       env:
        BINARY_IMAGE_NAME: "aquasec_binary_asset.tar"
